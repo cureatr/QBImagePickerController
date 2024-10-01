@@ -662,11 +662,20 @@ static CGSize CGSizeScale(CGSize size, CGFloat scale) {
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    UIWindowScene *windowScene = nil;
+    NSSet *scenes = [[UIApplication sharedApplication] connectedScenes];
+    for (id aScene in scenes) {
+    if ([aScene activationState] == UISceneActivationStateForegroundActive) {
+            windowScene = aScene;
+            break;
+        }
+    }
+
     NSUInteger numberOfColumns;
-    if (UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation])) {
-        numberOfColumns = self.imagePickerController.numberOfColumnsInPortrait;
-    } else {
+    if (windowScene != nil && UIInterfaceOrientationIsLandscape(windowScene.interfaceOrientation)) {
         numberOfColumns = self.imagePickerController.numberOfColumnsInLandscape;
+    } else {
+        numberOfColumns = self.imagePickerController.numberOfColumnsInPortrait;
     }
     
     CGFloat widthInset = 0.0;
